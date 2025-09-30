@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NHK時計</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      font-family: monospace;
+      /* 背景に縦線 */
+      background: 
+      repeating-linear-gradient(
+        to right,
+        #78a5b2 0px,
+        #78a5b2 5px,
+        #2c658d 6px,
+        #2c658d 10px,
+        #427899 11px,
+        #427899 14px,
+        #2c658d 15px,
+        #2c658d 19px
+      );
+    }
+
+    .container {
+      position: relative;
+      width: min(100vw, 100vh);
+      height: min(70vw, 70vh);
+      background: #c0c0c0c0;
+      border: 1px solid #c0c0c0;
+      border-radius: 50%;
+      box-shadow: inset 0px 0px 20px 10px rgba(0, 0, 0, 0.3);
+      display: flex;              /* 子要素を中央に */
+      justify-content: center;    /* 水平方向中央 */
+      align-items: center;        /* 垂直方向中央 */
+    }
+
+    .aClock {
+      position: relative;
+      width: min(60vw, 60vh);
+      height: min(60vw, 60vh);
+      background: #000; /* 内部は黒で塗りつぶす */
+      border: 1px solid #c0c0c0;
+      border-radius: 50%;
+
+    }
+    .aClock::after {
+      width: 5%;   /* 時計サイズに比例 */
+      height: 5%;
+      background: #fff;
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+
+    /* 針の共通スタイル */
+    .line {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: bottom center;
+        background: #fff;
+        box-shadow: 0px 0px 10px #fff;
+    }
+    /* 時針 */
+    .hour {
+        width: 5%;
+        height: 35%;
+        clip-path: polygon(50% 0%, 100% 70%, 55% 80%, 55% 100%, 40% 100%, 40% 80%, 0 70%);
+    }
+    /* 分針 */
+    .min {
+        width: 3%;
+        height: 45%;
+        clip-path: polygon(50% 0%, 100% 70%, 55% 85%, 55% 100%, 40% 100%, 40% 85%, 0 70%);
+    }
+    /* 秒針 */
+    .sec {
+        width: 1%;
+        height: 50%;
+    }
+    /* 秒針のテールを追加 */
+    .sec::before {
+        content: "";
+        position: absolute;
+        top: 100%;          /* 針の根元側に配置 */
+        left: 0;
+        width: 100%;
+        height: 25%;        /* はみ出す長さ（調整可） */
+        background: #fff;
+    }
+
+    /* 目盛り */
+    .scale {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    .scale > div {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 0.2%;
+      height: 50%;
+      transform-origin: bottom center;
+    }
+    .scale > div::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    /* 5分ごとの目盛り（大きい丸ドット） */
+    .scale > .major::after {
+      top: 2%; 
+      width: min(2.5vw, 2.5vh);
+      height: min(2.5vw, 2.5vh);
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.7;
+
+    }
+    /* 1分ごとの目盛り（短い線） */
+    .scale > .minor::after {
+      top: 2%;               /* ちょっとだけ外側に寄せる */
+      width: 3px;
+      height: 6%;            /* 短い線に見える長さ */
+      background: #fff;
+      opacity: 0.3;
+    }
+    /* 文字盤 */
+    .nums {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    .num {
+      position: absolute;
+      color: #fff;
+      font-weight: bold;
+      font-size: min(8vw, 8vh); /* 時計サイズに比例 */
+      text-shadow: 0px 0px 6px #000;
+      transform: translate(-50%, -50%);
+    }
+    .num12 { top: 12%; left: 50%; }
+    .num3  { top: 50%; right: 10%; transform: translate(50%, -50%); }
+    .num6  { bottom: 5%; left: 50%; transform: translateX(-50%);}
+    .num9  { top: 50%; left: 10%; transform: translate(-50%, -50%); }
+
+  
+    /* 日付窓（中央下） */
+    .dateWindow {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      border: 0.01em solid #00ff00;
+      border-radius: 0.3em;
+      padding: 0.1em 0.4em;
+      font-size: min(8vw, 4vh);
+      text-align: center;
+      text-shadow: 0px 0px 10px #8cd28c;
+      box-shadow: 0px 0px 10px #8cd28c inset;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="aClock">
+      <div class="scale"></div>
+      <div class="nums">
+        <div class="num num12">12</div>
+        <div class="num num3">３</div>
+        <div class="num num6">６</div>
+        <div class="num num9">９</div>
+      </div>
+      <div class="hour line"></div>
+      <div class="min line"></div>
+      <div class="sec line"></div>
+    </div>
+  </div>
+
+  <script>
+  // 目盛り生成
+  window.onload = function () {
+    let scaleElem = document.querySelector(".scale");
+    for (let i = 0; i < 60; i++) {
+      let addElem = document.createElement("div");
+      addElem.className = (i % 5 === 0) ? "major" : "minor"; // 5分ごとと1分ごとで区別
+      addElem.style.transform = `rotate(${i * 6}deg)`;
+      scaleElem.appendChild(addElem);
+    }
+  };
+
+    function updateClock() {
+      let now = new Date();
+      let deg_h = now.getHours() * 30 + now.getMinutes() * 0.5;
+      let deg_m = now.getMinutes() * 6;
+      let deg_s = now.getSeconds() * 6;
+      document.querySelector(".hour").style.transform = `translate(-50%, -100%) rotate(${deg_h}deg)`;
+      document.querySelector(".min").style.transform = `translate(-50%, -100%) rotate(${deg_m}deg)`;
+      document.querySelector(".sec").style.transform = `translate(-50%, -100%) rotate(${deg_s}deg)`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
